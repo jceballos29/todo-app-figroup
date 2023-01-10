@@ -13,6 +13,7 @@ import { Completed, Home, Today, Upcoming } from './pages';
 import { setTasks } from './redux/features/taskSlice';
 import { getAllTasks } from './services';
 import { Task } from './types';
+import { Spin } from 'antd'
 
 export interface AppInterface {}
 
@@ -51,16 +52,20 @@ let router = createBrowserRouter([
 
 const App: React.FC<AppInterface> = () => {
 	const dispatch = useDispatch();
+	const [ loading, setLoading ] = React.useState<boolean>(true)
 
 	useEffect(() => {
 		getAllTasks().then((tasks: Array<Task>) => {
 			dispatch(setTasks(tasks));
+			setLoading(false)
 		});
 	}, [dispatch]);
 
 	return (
 		<div className='App'>
-			<RouterProvider router={router} />
+			{
+				loading ? <Spin size="large" /> : <RouterProvider router={router} />
+			}
 		</div>
 	);
 };
